@@ -37,30 +37,26 @@ const getCircularReplacer = () => {
     };
   };
 
-
-
-const originalView = UTClubSearchResultsView.prototype._generate;
-
-UTClubSearchResultsView.prototype._generate = function () {
-  // this is called by the club search when looking for players in your club/concept players to add to a squad
-
-  originalView.call(this);
-  setTimeout(() => {
-    const listItems = this._list.listRows;
-    listItems.forEach((item) => {
-        console.log(item);
-      GM_xmlhttpRequest({
-        method: "POST",
-        dataType: "json",
-        url: "http://localhost/fut/postItemData.php",
-        data: JSON.stringify(item, getCircularReplacer()),
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        onload: function (response) {
-            console.log(response.responseText);
-        },
-      });
-    });
-  }, 500);
+const setItems = UTClubSearchResultsView.prototype.setItems;
+UTClubSearchResultsView.prototype.setItems = function (t, e, i){
+    setItems.call(this, t, e, i);
+    setTimeout(() => {
+        const listItems = this._list.listRows;
+        listItems.forEach((item) => {
+            console.log(item);
+          GM_xmlhttpRequest({
+            method: "POST",
+            dataType: "json",
+            url: "http://localhost/fut/postItemData.php",
+            data: JSON.stringify(item, getCircularReplacer()),
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+            },
+            onload: function (response) {
+                console.log(response.responseText);
+            },
+          });
+        });
+      }, 500);
 }
+
